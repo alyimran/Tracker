@@ -8,11 +8,11 @@ import Authform from '../components/Authform'
 
 
 
-const SignupScreen = ({navigation}) => {
-    const {state, signUp} = useContext(AuthContext)
+const SignupScreen = () => {
+    const {state, signUp } = useContext(AuthContext)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    console.log(state)
+
   return (
     <View style= {styles.container}>
     <Authform 

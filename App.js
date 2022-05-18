@@ -11,8 +11,10 @@ import TrackCreateScreen from "./src/screens/TrackCreateScreen";
 
 import {Provider as AuthProvider} from './src/context/AuthContext'
 import { setNavigator } from './src/navigatorRef';
+import AuthResolveScreen from './src/screens/AuthResolveScreen';
 
 const switchNavigator = createSwitchNavigator({
+  AuthResolve:AuthResolveScreen,
   loginFlow : createStackNavigator({
     SignUp:SignupScreen,
     SignIn:SigninScreen

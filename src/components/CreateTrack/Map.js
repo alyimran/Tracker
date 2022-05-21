@@ -1,56 +1,43 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React , {useState , useEffect} from 'react'
-import MapView , {Polyline} from 'react-native-maps'
-import { requestForegroundPermissionsAsync } from 'expo-location'
+import { StyleSheet, Text, View , ActivityIndicator } from 'react-native'
+import React , {useState , useEffect , useContext} from 'react'
+import MapView , {Polyline , Circle} from 'react-native-maps'
+import { Context as LocationContext } from '../../context/LocationContext'
 
 const Map = () => {
-  const  [err, setErr] = useState(null)
-  const points = []
-  for(let i = 0; i<20;i++)
-  {
-    points.push({
-      latitude:37.33233 + i*0.001,
-      longitude:-122.03121 + i*0.001,
-    });
-  }
-
-  const startWatching = async() =>{
-    try{
-      console.log("start watching called")
-    const {granted} = await requestForegroundPermissionsAsync();
-    console.log("Granted value" + granted)
-    if (!granted)
-    {
-      throw new Error("Location permissions not granted");
-    }
-    }
-    catch(err)
-    {
-      console.log("Error is" + err)
-      setErr(err);
-    }
-  }
-
-  useEffect(()=>{
-    startWatching();
-  },[]);
-
+  const {state :{currentLocation , locations}} = useContext(LocationContext)
+  //console.log(state)
+  if (!currentLocation)
+  return(<ActivityIndicator style={{marginTop:200}} size="large"/>)
   return (
     <View>
       <MapView 
       style={styles.mapStyle}
       initialRegion= {{
-        latitude:37.33233,
-        longitude:-122.03121,
+        // latitude:currentLocation.coords.latitude,
+        // longitude:currentLocation.coords.longitude,
+        // or
+        ...currentLocation.coords,
         latitudeDelta:0.01,
         longitudeDelta:0.01
       }}
+      // region={{
+      //   // latitude:currentLocation.coords.latitude,
+      //   // longitude:currentLocation.coords.longitude,
+      //   // or
+      //   ...currentLocation.coords,
+      //   latitudeDelta:0.01,
+      //   longitudeDelta:0.01
+      // }}
       >
-        <Polyline
-        coordinates={points}
-        />
+       <Circle
+       center={currentLocation.coords}
+       radius={30}
+       strokeColor="rgba(158, 158 , 255, 1.0 )"
+       fillColor="rgba(158, 158 , 255, 0.3 )"
+       />
+       <Polyline coordinates={locations.map((loc)=>loc.coords)}/>
       </MapView>
-      {err!==null?<Text>Please give permissions of location</Text>:null}
+     
     </View>
   )
 }
